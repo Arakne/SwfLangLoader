@@ -21,6 +21,7 @@ package fr.arakne.swflangloader.parser;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import fr.arakne.swflangloader.parser._fixtures.Item;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -133,5 +134,37 @@ class AssignationParserTest {
         assertTrue(parser.parseLine("TEST = 123").isNull());
         assertTrue(parser.parseLine("OOF[\"aaa\"] = \"bbb\";").isNull());
         assertTrue(parser.parseLine("OOF = \"bbb\";").isNull());
+    }
+
+    /**
+     * See: https://github.com/Arakne/SwfLangLoader/issues/1
+     */
+    @Test
+    void parseWithStringConcatenation() {
+        String line = "I.u[12785] = {n: \"Dagues Sram\", t: 5, d: \"Cette arme vous est prêtée par Notend Less qui voit en vous du potentiel... Bon, en réalité c\\'est plutôt votre côté \" + \"\\\"\" + \"bête de foire\" + \"\\\"\" + \" qui l\\'intéressait. Pas très élogieux. Dans tous les cas, elle vous permet de revêtir temporairement les traits d\\'une classe et c\\'est déjà pas si mal.\", ep: 18, g: 34, l: 50, wd: false, fm: false, w: 0, an: 13, e: [15, 3, 1, 1, 30, 50, false, false], c: \"PB=86\", p: 100};";
+
+        parser.declareIntegerMap("I.u", Item.class);
+        Assignation assignation = parser.parseLine(line);
+
+        assertFalse(assignation.isNull());
+        assertEquals("I.u", assignation.variableName());
+        assertEquals(12785, assignation.key());
+        assertTrue(assignation.value() instanceof Item);
+
+        Item item = (Item) assignation.value();
+
+        assertEquals("Dagues Sram", item.n);
+        assertEquals(5, item.t);
+        assertEquals("Cette arme vous est prêtée par Notend Less qui voit en vous du potentiel... Bon, en réalité c'est plutôt votre côté \"bête de foire\" qui l'intéressait. Pas très élogieux. Dans tous les cas, elle vous permet de revêtir temporairement les traits d'une classe et c'est déjà pas si mal.", item.d);
+        assertEquals(18, item.ep);
+        assertEquals(34, item.g);
+        assertEquals(50, item.l);
+        assertFalse(item.wd);
+        assertFalse(item.fm);
+        assertEquals(0, item.w);
+        assertEquals(13, item.an);
+        assertArrayEquals(new Object[] {15.0, 3.0, 1.0, 1.0, 30.0, 50.0, false, false}, item.e);
+        assertEquals("PB=86", item.c);
+        assertEquals(100, item.p);
     }
 }
