@@ -1,0 +1,29 @@
+name: Java CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java_version: [8, 11, 14, 17]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Europe/Paris"
+
+      - name: Set up JDK ${{ matrix.java_version }}
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ matrix.java_version }}
+          distribution: 'adopt'
+
+      - name: Run tests
+        run: mvn --batch-mode verify
