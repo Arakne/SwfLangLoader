@@ -115,7 +115,11 @@ final public class AssignationParser {
         }
 
         final String left = line.substring(0, eqPos).trim();
-        final String right = removeCastFunctions(line.substring(eqPos + 1, line.length() - 1).trim());
+        final String right = handleConcatenation(
+            removeCastFunctions(
+                line.substring(eqPos + 1, line.length() - 1).trim()
+            )
+        );
 
         if (left.isEmpty() || right.isEmpty()) {
             return Assignation.NULL;
@@ -153,5 +157,13 @@ final public class AssignationParser {
         }
 
         return value;
+    }
+
+    /**
+     * Remove simple string concatenation
+     * See: https://github.com/Arakne/SwfLangLoader/issues/1
+     */
+    private String handleConcatenation(String value) {
+        return value.replaceAll("\" \\+ \"", "");
     }
 }
