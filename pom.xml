@@ -25,7 +25,7 @@
 
     <groupId>fr.arakne</groupId>
     <artifactId>swf-lang-loader</artifactId>
-    <version>0.2-alpha</version>
+    <version>0.3-SNAPSHOT</version>
     <name>Swf Lang Loader</name>
     <description>Load and parse Dofus retro swf lang files.</description>
     <url>https://github.com/Arakne/SwfLangLoader</url>
