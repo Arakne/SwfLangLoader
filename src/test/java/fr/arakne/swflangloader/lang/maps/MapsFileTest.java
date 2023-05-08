@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,7 +35,7 @@ class MapsFileTest {
 
     @BeforeAll
     static void beforeAll() throws IOException, InterruptedException {
-        maps = new MapsFile(new URL("http://arakne.fr/dofus/dofus-1-29/lang/swf/maps_fr_366.swf"));
+        maps = new MapsFile(Paths.get("assets/lang-1-29/swf/maps_fr_366.swf").toUri().toURL());
     }
 
     @AfterAll

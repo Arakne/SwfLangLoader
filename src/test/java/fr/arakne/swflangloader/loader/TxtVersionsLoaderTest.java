@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +37,7 @@ class TxtVersionsLoaderTest {
     @BeforeEach
     void setUp() throws MalformedURLException {
         loader = new TxtVersionsLoader();
-        baseUrl = new URL("http://arakne.fr/dofus/dofus-1-29/lang");
+        baseUrl = Paths.get("assets/lang-1-29").toUri().toURL();
     }
 
     @Test

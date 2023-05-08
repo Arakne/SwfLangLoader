@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,7 +34,7 @@ class ClassesFileTest {
 
     @BeforeAll
     static void beforeAll() throws IOException, InterruptedException {
-        classes = new ClassesFile(new URL("http://arakne.fr/dofus/dofus-1-29/lang/swf/classes_fr_180.swf"));
+        classes = new ClassesFile(Paths.get("assets/lang-1-29/swf/classes_fr_180.swf").toUri().toURL());
     }
 
     @AfterAll

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ class HintsFileTest {
 
     @BeforeAll
     static void beforeAll() throws IOException, InterruptedException {
-        hints = new HintsFile(new URL("http://arakne.fr/dofus/dofus-1-29/lang/swf/hints_fr_116.swf"));
+        hints = new HintsFile(Paths.get("assets/lang-1-29/swf/hints_fr_116.swf").toUri().toURL());
     }
 
     @AfterAll

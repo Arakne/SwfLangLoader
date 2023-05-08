@@ -59,7 +59,7 @@ class SwfFileLoaderTest {
     @Test
     void load() throws IOException, InterruptedException {
         Structure structure = new Structure();
-        loader.load(new URL("http://arakne.fr/dofus/dofus-1-29/lang/swf/lang_fr_801.swf"), structure, MapperHydrator.parseAnnotations(Structure.class));
+        loader.load(Paths.get("assets/lang-1-29/swf/lang_fr_801.swf").toUri().toURL(), structure, MapperHydrator.parseAnnotations(Structure.class));
 
         assertEquals(801, structure.VERSION);
         assertTrue(structure.FILE_BEGIN);
@@ -76,7 +76,7 @@ class SwfFileLoaderTest {
     @Test
     void loadWithoutCache() throws IOException, InterruptedException {
         Structure structure = new Structure();
-        new SwfFileLoader(Paths.get("./tmp"), false).load(new URL("http://arakne.fr/dofus/dofus-1-29/lang/swf/lang_fr_801.swf"), structure, MapperHydrator.parseAnnotations(Structure.class));
+        new SwfFileLoader(Paths.get("./tmp"), false).load(Paths.get("assets/lang-1-29/swf/lang_fr_801.swf").toUri().toURL(), structure, MapperHydrator.parseAnnotations(Structure.class));
 
         assertEquals(801, structure.VERSION);
         assertTrue(structure.FILE_BEGIN);
@@ -93,7 +93,7 @@ class SwfFileLoaderTest {
     @Test
     void clear() throws IOException, InterruptedException {
         Structure structure = new Structure();
-        loader.load(new URL("http://arakne.fr/dofus/dofus-1-29/lang/swf/lang_fr_801.swf"), structure, MapperHydrator.parseAnnotations(Structure.class));
+        loader.load(Paths.get("assets/lang-1-29/swf/lang_fr_801.swf").toUri().toURL(), structure, MapperHydrator.parseAnnotations(Structure.class));
 
         assertTrue(Files.exists(Paths.get("./tmp/lang_fr_801/frame_1/DoAction.as")));
         loader.clear();
