@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +37,7 @@ class LangFileTest {
 
     @BeforeAll
     static void beforeAll() throws IOException, InterruptedException {
-        lang = new LangFile(new URL("http://arakne.fr/dofus/dofus-1-29/lang/swf/lang_fr_801.swf"));
+        lang = new LangFile(Paths.get("assets/lang-1-29/swf/lang_fr_801.swf").toUri().toURL());
     }
 
     @AfterAll

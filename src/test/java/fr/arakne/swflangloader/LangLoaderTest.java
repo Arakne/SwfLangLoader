@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,7 +38,7 @@ class LangLoaderTest {
 
     @BeforeAll
     static void beforeAll() throws MalformedURLException {
-        loader = new LangLoader(new URL("http://arakne.fr/dofus/dofus-1-29/lang"), "fr");
+        loader = new LangLoader(Paths.get("assets/lang-1-29").toUri().toURL(), "fr");
     }
 
     @AfterAll
