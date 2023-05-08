@@ -1,7 +1,6 @@
 # Swf Lang Loader
 [![Java CI](https://github.com/Arakne/SwfLangLoader/actions/workflows/ci.yaml/badge.svg)](https://github.com/Arakne/SwfLangLoader/actions/workflows/ci.yaml)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Arakne/SwfLangLoader/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Arakne/SwfLangLoader/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Arakne/SwfLangLoader/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Arakne/SwfLangLoader/?branch=master)
+[![codecov](https://codecov.io/gh/Arakne/SwfLangLoader/branch/master/graph/badge.svg?token=ZQZL2ZQZQI)](https://app.codecov.io/gh/Arakne/SwfLangLoader)
 [![javadoc](https://javadoc.io/badge2/fr.arakne/swf-lang-loader/javadoc.svg)](https://javadoc.io/doc/fr.arakne/swf-lang-loader)
 [![Maven Central](https://img.shields.io/maven-central/v/fr.arakne/swf-lang-loader)](https://search.maven.org/artifact/fr.arakne/swf-lang-loader) 
  
