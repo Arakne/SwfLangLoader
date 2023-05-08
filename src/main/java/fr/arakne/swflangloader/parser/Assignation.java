@@ -59,7 +59,7 @@ final public class Assignation {
     }
 
     /**
-     * @return true if it's a null assignation (mustbe skipped)
+     * @return true if it's a null assignation (must be skipped)
      */
     public boolean isNull() {
         return variableName == null;

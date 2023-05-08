@@ -21,6 +21,8 @@ package fr.arakne.swflangloader.parser;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 
@@ -28,6 +30,7 @@ import java.lang.reflect.Type;
  * Map variable assignation
  */
 final public class MapAssignationType implements AssignationType {
+    final static private Logger LOGGER = LoggerFactory.getLogger(AssignationParser.class);
     final static private Gson GSON = new Gson();
 
     final private Type keyType;
@@ -47,6 +50,7 @@ final public class MapAssignationType implements AssignationType {
                 GSON.fromJson(value, type)
             );
         } catch (JsonSyntaxException e) {
+            LOGGER.warn("[SWF] Cannot parse {} as JSON: {} (variable: {}[{}])", value, e.getMessage(), varName, key);
             return Assignation.NULL;
         }
     }

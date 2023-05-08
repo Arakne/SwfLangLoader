@@ -69,6 +69,7 @@ final public class LangLoader {
      * @return The loaded file
      *
      * @throws IOException When cannot load the file
+     * @throws InterruptedException When the loading is cancelled
      */
     public BaseLangFile load(String name) throws IOException, InterruptedException {
         BaseLangFile file;
@@ -88,7 +89,9 @@ final public class LangLoader {
      * Note: Keep the loaded instance in memory
      *
      * @return MapsFile instance
+     *
      * @throws IOException When cannot load the file
+     * @throws InterruptedException When the loading is cancelled
      */
     public MapsFile maps() throws IOException, InterruptedException {
         if (maps != null) {
@@ -103,7 +106,9 @@ final public class LangLoader {
      * Note: Keep the loaded instance in memory
      *
      * @return ClassesFile instance
+     *
      * @throws IOException When cannot load the file
+     * @throws InterruptedException When the loading is cancelled
      */
     public ClassesFile classes() throws IOException, InterruptedException {
         if (classes != null) {
@@ -118,7 +123,9 @@ final public class LangLoader {
      * Note: Keep the loaded instance in memory
      *
      * @return HintsFile instance
+     *
      * @throws IOException When cannot load the file
+     * @throws InterruptedException When the loading is cancelled
      */
     public HintsFile hints() throws IOException, InterruptedException {
         if (hints != null) {
@@ -133,7 +140,9 @@ final public class LangLoader {
      * Note: Keep the loaded instance in memory
      *
      * @return LangFile instance
+     *
      * @throws IOException When cannot load the file
+     * @throws InterruptedException When the loading is cancelled
      */
     public LangFile lang() throws IOException, InterruptedException {
         if (lang != null) {

@@ -19,17 +19,25 @@
 
 package fr.arakne.swflangloader.parser;
 
+import com.github.valfirst.slf4jtest.LoggingEvent;
+import com.github.valfirst.slf4jtest.TestLogger;
+import com.github.valfirst.slf4jtest.TestLoggerFactory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import fr.arakne.swflangloader.loader.SwfFileLoader;
 import fr.arakne.swflangloader.parser._fixtures.Item;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import uk.org.lidalia.slf4jext.Level;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AssignationParserTest {
+    private final TestLogger logger = TestLoggerFactory.getTestLogger(AssignationParser.class);
+
     static public class ComplexType {
         public int a;
         public String b;
@@ -61,6 +69,7 @@ class AssignationParserTest {
 
     @BeforeEach
     void setUp() {
+        logger.clearAll();
         parser = new AssignationParser();
     }
 
@@ -134,6 +143,17 @@ class AssignationParserTest {
         assertTrue(parser.parseLine("TEST = 123").isNull());
         assertTrue(parser.parseLine("OOF[\"aaa\"] = \"bbb\";").isNull());
         assertTrue(parser.parseLine("OOF = \"bbb\";").isNull());
+        assertTrue(parser.parseLine("OOF[123] = invalid json;").isNull());
+        assertTrue(parser.parseLine("COMPLEX = {invalid};").isNull());
+
+        List<LoggingEvent> logs = logger.getLoggingEvents();
+
+        assertEquals(3, logs.size());
+        assertTrue(logs.stream().allMatch(event -> event.getLevel().equals(Level.WARN)));
+
+        assertEquals("[SWF] Cannot parse \"bbb\" as JSON: java.lang.NumberFormatException: For input string: \"aaa\" (variable: OOF[\"aaa\"])", logs.get(0).getFormattedMessage());
+        assertEquals("[SWF] Cannot parse invalid json as JSON: com.google.gson.stream.MalformedJsonException: Use JsonReader.setLenient(true) to accept malformed JSON at line 1 column 10 path $ (variable: OOF[123])", logs.get(1).getFormattedMessage());
+        assertEquals("[SWF] Cannot parse {invalid} as JSON: com.google.gson.stream.MalformedJsonException: Expected ':' at line 1 column 10 path $.invalid (variable: COMPLEX)", logs.get(2).getFormattedMessage());
     }
 
     /**

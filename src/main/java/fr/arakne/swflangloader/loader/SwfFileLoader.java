@@ -24,6 +24,8 @@ import com.jpexs.decompiler.flash.SWF;
 import com.jpexs.decompiler.flash.exporters.modes.ScriptExportMode;
 import com.jpexs.decompiler.flash.exporters.settings.ScriptExportSettings;
 import fr.arakne.swflangloader.parser.mapper.MapperHydrator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -38,6 +40,8 @@ import java.util.stream.Stream;
  * Load the SWF file to extract AS3 sources
  */
 final public class SwfFileLoader {
+    private final static Logger LOGGER = LoggerFactory.getLogger(SwfFileLoader.class);
+
     final private Path tempDir;
     final private boolean cache;
 
@@ -60,11 +64,15 @@ final public class SwfFileLoader {
      * @param file SWF file URL
      * @param target The target structure
      * @param hydrator Hydrator to use
+     *
      * @param <T> The structure type
      *
      * @throws IOException When error occurs during loading the SWF file
+     * @throws InterruptedException When the loading is cancelled
      */
     public synchronized <T extends AbstractSwfFile> void load(URL file, T target, MapperHydrator<T> hydrator) throws IOException, InterruptedException {
+        LOGGER.debug("[SWF] Loading {} to {}", file, target.getClass().getSimpleName());
+
         final String filename = extractFilename(file);
         parseFilename(target, filename);
 
@@ -75,6 +83,7 @@ final public class SwfFileLoader {
             List<File> sources = loadFilesFromCache(outdir);
 
             if (sources.isEmpty()) {
+                LOGGER.debug("[SWF] {} is not cached. Load from SWF", file);
                 sources = loadFilesFromSwf(file, outdir);
             }
 
@@ -153,7 +162,7 @@ final public class SwfFileLoader {
         try (final Stream<Path> files = Files.walk(cacheDir)) {
             return files
                 .filter(Files::isRegularFile)
-                .filter(path -> path.endsWith(".as"))
+                .filter(path -> path.toString().endsWith(".as"))
                 .map(Path::toFile)
                 .collect(Collectors.toList())
             ;
@@ -166,7 +175,12 @@ final public class SwfFileLoader {
     private <T> void parseFile(File file, T target, MapperHydrator<T> hydrator) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath())))) {
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-                hydrator.hydrate(target, line);
+                try {
+                    hydrator.hydrate(target, line);
+                } catch (Exception e) {
+                    LOGGER.error("[SWF] Error while parsing line: {}", line, e);
+                    throw e;
+                }
             }
         }
     }

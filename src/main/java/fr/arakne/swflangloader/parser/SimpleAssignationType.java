@@ -21,11 +21,14 @@ package fr.arakne.swflangloader.parser;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple variable assignation
  */
 final public class SimpleAssignationType implements AssignationType {
+    final static private Logger LOGGER = LoggerFactory.getLogger(AssignationParser.class);
     final static private Gson GSON = new Gson();
 
     final private Class<?> type;
@@ -39,6 +42,7 @@ final public class SimpleAssignationType implements AssignationType {
         try {
             return Assignation.simple(varName, GSON.fromJson(value, type));
         } catch (JsonSyntaxException e) {
+            LOGGER.warn("[SWF] Cannot parse {} as JSON: {} (variable: {})", value, e.getMessage(), varName);
             return Assignation.NULL;
         }
     }

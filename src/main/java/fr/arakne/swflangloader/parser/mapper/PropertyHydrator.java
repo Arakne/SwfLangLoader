@@ -20,12 +20,23 @@
 package fr.arakne.swflangloader.parser.mapper;
 
 /**
+ * Base type for hydrate or extract a variable value from a SWF structure
  *
- * @param <T>
- * @param <V>
+ * @param <T> Type of target object (i.e. SWF structure)
+ * @param <V> Type of the SWF variable
  */
 interface PropertyHydrator<T, V> {
+    /**
+     * @param source The structure
+     * @return The value of the variable
+     */
     public V get(T source);
 
+    /**
+     * Set the value of the variable
+     *
+     * @param target The structure
+     * @param value The value
+     */
     public void set(T target, V value);
 }
