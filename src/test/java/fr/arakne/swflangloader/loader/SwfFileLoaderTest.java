@@ -19,20 +19,30 @@
 
 package fr.arakne.swflangloader.loader;
 
+import com.github.valfirst.slf4jtest.Assertions;
+import com.github.valfirst.slf4jtest.LoggingEvent;
+import com.github.valfirst.slf4jtest.TestLogger;
+import com.github.valfirst.slf4jtest.TestLoggerFactory;
 import fr.arakne.swflangloader.parser.mapper.MapperHydrator;
 import fr.arakne.swflangloader.parser.mapper.SwfVariable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import uk.org.lidalia.slf4jext.Level;
+import uk.org.lidalia.slf4jext.Logger;
+import uk.org.lidalia.slf4jext.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class SwfFileLoaderTest {
+    private final TestLogger logger = TestLoggerFactory.getTestLogger(SwfFileLoader.class);
+
     private SwfFileLoader loader;
 
     static public class Structure extends AbstractSwfFile {
@@ -48,6 +58,7 @@ class SwfFileLoaderTest {
 
     @BeforeEach
     void setUp() {
+        logger.clearAll();
         loader = new SwfFileLoader();
     }
 
@@ -71,12 +82,33 @@ class SwfFileLoaderTest {
         assertEquals(801, structure.version());
 
         assertTrue(Files.exists(Paths.get("./tmp/lang_fr_801/frame_1/DoAction.as")));
+
+        List<LoggingEvent> logs = logger.getLoggingEvents();
+
+        assertEquals(2, logs.size());
+        assertEquals(Level.DEBUG, logs.get(0).getLevel());
+        assertEquals("[SWF] Loading {} to {}", logs.get(0).getMessage());
+        assertTrue(logs.get(0).getArguments().get(0).toString().endsWith("assets/lang-1-29/swf/lang_fr_801.swf"));
+        assertEquals("Structure", logs.get(0).getArguments().get(1).toString());
+
+        assertEquals(Level.DEBUG, logs.get(1).getLevel());
+        assertEquals("[SWF] {} is not cached. Load from SWF", logs.get(1).getMessage());
+        assertTrue(logs.get(1).getArguments().get(0).toString().endsWith("assets/lang-1-29/swf/lang_fr_801.swf"));
+
+        logger.clearAll();
+        // Should be loaded from cache
+        loader.load(Paths.get("assets/lang-1-29/swf/lang_fr_801.swf").toUri().toURL(), structure, MapperHydrator.parseAnnotations(Structure.class));
+        logs = logger.getLoggingEvents();
+
+        assertEquals(1, logs.size());
+        assertEquals("[SWF] Loading {} to {}", logs.get(0).getMessage());
     }
 
     @Test
     void loadWithoutCache() throws IOException, InterruptedException {
         Structure structure = new Structure();
-        new SwfFileLoader(Paths.get("./tmp"), false).load(Paths.get("assets/lang-1-29/swf/lang_fr_801.swf").toUri().toURL(), structure, MapperHydrator.parseAnnotations(Structure.class));
+        SwfFileLoader loader = new SwfFileLoader(Paths.get("./tmp"), false);
+        loader.load(Paths.get("assets/lang-1-29/swf/lang_fr_801.swf").toUri().toURL(), structure, MapperHydrator.parseAnnotations(Structure.class));
 
         assertEquals(801, structure.VERSION);
         assertTrue(structure.FILE_BEGIN);
@@ -88,6 +120,21 @@ class SwfFileLoaderTest {
         assertEquals(801, structure.version());
 
         assertFalse(Files.exists(Paths.get("./tmp/lang_fr_801/frame_1/DoAction.as")));
+
+        List<LoggingEvent> logs = logger.getLoggingEvents();
+
+        assertEquals(2, logs.size());
+        assertEquals("[SWF] Loading {} to {}", logs.get(0).getMessage());
+        assertEquals("[SWF] {} is not cached. Load from SWF", logs.get(1).getMessage());
+
+        logger.clearAll();
+        loader.load(Paths.get("assets/lang-1-29/swf/lang_fr_801.swf").toUri().toURL(), structure, MapperHydrator.parseAnnotations(Structure.class));
+        logs = logger.getLoggingEvents();
+
+        // Cache is ignored
+        assertEquals(2, logs.size());
+        assertEquals("[SWF] Loading {} to {}", logs.get(0).getMessage());
+        assertEquals("[SWF] {} is not cached. Load from SWF", logs.get(1).getMessage());
     }
 
     @Test

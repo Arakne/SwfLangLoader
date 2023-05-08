@@ -39,6 +39,8 @@ final public class MapperHydrator<T> {
 
     /**
      * Define the default property (i.e. for undeclared variable) hydrator
+     *
+     * @param defaultHydrator The hydrator instance to use.
      */
     public void setDefaultHydrator(PropertyHydrator<T, Map<String, Object>> defaultHydrator) {
         this.defaultHydrator = defaultHydrator;
@@ -62,10 +64,11 @@ final public class MapperHydrator<T> {
      * Define a property for a map variable
      *
      * @param varName The SWF variable name
-     * @param keyType The map key type
+     * @param keyType The map key type. Should be String or Integer.
      * @param type The map value type
      * @param hydrator Hydrator to use
      *
+     * @param <K> The map key type
      * @param <V> The variable type
      */
     public <K, V> void declareMapProperty(String varName, Class<K> keyType, Class<V> type, PropertyHydrator<T, Map<K, V>> hydrator) {
