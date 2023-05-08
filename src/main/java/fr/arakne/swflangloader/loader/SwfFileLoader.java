@@ -32,6 +32,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Load the SWF file to extract AS3 sources
@@ -137,7 +138,7 @@ final public class SwfFileLoader {
                     }
                 },
                 outdir.toAbsolutePath().toString(),
-                new ScriptExportSettings(ScriptExportMode.AS, false),
+                new ScriptExportSettings(ScriptExportMode.AS, false, true),
                 false,
                 null
             );
@@ -149,19 +150,21 @@ final public class SwfFileLoader {
             return Collections.emptyList();
         }
 
-        return Files.walk(cacheDir)
-            .filter(Files::isRegularFile)
-            .filter(path -> path.endsWith(".as"))
-            .map(Path::toFile)
-            .collect(Collectors.toList())
-        ;
+        try (final Stream<Path> files = Files.walk(cacheDir)) {
+            return files
+                .filter(Files::isRegularFile)
+                .filter(path -> path.endsWith(".as"))
+                .map(Path::toFile)
+                .collect(Collectors.toList())
+            ;
+        }
     }
 
     /**
      * Parse file lines
      */
     private <T> void parseFile(File file, T target, MapperHydrator<T> hydrator) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath())))) {
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 hydrator.hydrate(target, line);
             }
