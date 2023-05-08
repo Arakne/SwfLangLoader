@@ -14,7 +14,7 @@ For installing using maven, add this dependency into the `pom.xml` :
 <dependency>
     <groupId>fr.arakne</groupId>
     <artifactId>swf-lang-loader</artifactId>
-    <version>0.2-alpha</version>
+    <version>0.3-alpha</version>
 </dependency>
 ```
 
